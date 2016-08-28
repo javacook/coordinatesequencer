@@ -17,8 +17,8 @@ public class CoordinateSequencer {
     private Integer yFrom;
     private Integer xTo;
     private Integer yTo;
-    private Integer xOffset;
-    private Integer yOffset;
+    private Integer xLen;
+    private Integer yLen;
     private int xStep;
     private int yStep;
     private boolean virgin;
@@ -31,7 +31,6 @@ public class CoordinateSequencer {
     protected void initCache() {
         xFrom = yFrom = null;
         xTo = yTo = null;
-        // xOffset = yOffset = 1;
         xStep = yStep = 1;
         virgin = true;
     }
@@ -79,13 +78,13 @@ public class CoordinateSequencer {
 
 
     public CoordinateSequencer lenX(int xLength) {
-        this.xOffset = xLength;
+        this.xLen = xLength;
         virgin = false;
         return this;
     }
 
     public CoordinateSequencer lenY(int yLength) {
-        this.yOffset = yLength;
+        this.yLen = yLength;
         virgin = false;
         return this;
     }
@@ -120,14 +119,14 @@ public class CoordinateSequencer {
 
     public CoordinateSequence build() {
         try {
-            if (xFrom == null) xFrom = xTo - xOffset;
-            else if (xTo == null) xTo = xFrom + xOffset;
+            if (xFrom == null) xFrom = xTo - xLen;
+            else if (xTo == null) xTo = xFrom + xLen;
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("x-coordinates are not well defined.");
         }
         try {
-            if (yFrom == null) yFrom = yTo - yOffset;
-            else if (yTo == null) yTo = yFrom + yOffset;
+            if (yFrom == null) yFrom = yTo - yLen;
+            else if (yTo == null) yTo = yFrom + yLen;
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("y-coordinates are not well defined.");
         }
@@ -301,47 +300,4 @@ public class CoordinateSequencer {
         }
     }
 
-
-
-
-    /*-------------------------------------------------------------------------*\
-     * main                                                                    *
-    \*-------------------------------------------------------------------------*/
-
-    public static void main(String[] args) {
-
-        new CoordinateSequencer().fromX(5).toY(9)
-            .forEach(System.out::println);
-
-        System.out.println("--------------");
-
-        new CoordinateSequencer()
-                .fromX(1).lenX(14).forY(4)
-                .stopWhen(coord -> coord.x > 10)
-                .forEach(coord -> System.out.println(coord));
-
-        System.out.println("--------------");
-
-        new CoordinateSequencer()
-                .fromX(1).lenX(4).forY(4).enter()
-                .fromX(2).lenX(4).forY(9)
-                .forEachArray(coords -> System.out.println(coords[0] + ", " + coords[1]));
-
-        System.out.println("--------------");
-
-        new CoordinateSequencer()
-                .fromX(1).lenX(4).forY(4).enter()
-                .fromX(2).lenX(4).forY(9)
-                .forEachPair( (coord1, coord2) -> System.out.println(coord1 + ", " + coord2));
-
-        System.out.println("--------------");
-
-        new CoordinateSequencer()
-                .fromX(2).lenX(4).forY(9)
-                .forEach(coordH -> {
-                    new CoordinateSequencer()
-                            .from(coordH).lenY(4)
-                            .forEach(coordV -> System.out.println(coordV) );
-                });
-    }
 }

@@ -1,7 +1,7 @@
 package com.javacook.coordinate;
 
 /**
- * Created by vollmer on 20.08.16.
+ * Stores 2D coordinates
  */
 public class Coordinate {
 
