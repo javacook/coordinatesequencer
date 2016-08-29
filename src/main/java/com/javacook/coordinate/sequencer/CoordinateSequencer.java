@@ -154,31 +154,49 @@ public class CoordinateSequencer {
 
 
     public CoordinateSequencer stopWhen(Predicate<Coordinate> condition) {
+        if (!virgin) enter();
+        if (coordinateSequences.size() != 1) {
+            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+        }
         predicate = condition;
         return this;
     }
 
     public CoordinateSequencer stopWhen(PredicateAndCounter<Coordinate> condition) {
+        if (!virgin) enter();
+        if (coordinateSequences.size() != 1) {
+            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+        }
         predicateAndCounter = condition;
         return this;
     }
 
     public CoordinateSequencer stopWhenPair(PairPredicate<Coordinate> condition) {
+        if (!virgin) enter();
+        if (coordinateSequences.size() != 2) {
+            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+        }
         pairPredicate = condition;
         return this;
     }
 
     public CoordinateSequencer stopWhenPair(PairPredicateAndCounter<Coordinate> condition) {
+        if (!virgin) enter();
+        if (coordinateSequences.size() != 2) {
+            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+        }
         pairPredicateAndCounter = condition;
         return this;
     }
 
     public CoordinateSequencer stopWhenArray(ArrayPredicate<Coordinate> condition) {
+        if (!virgin) enter();
         arrayPredicate = condition;
         return this;
     }
 
     public CoordinateSequencer stopWhenArray(ArrayPredicateAndCounter<Coordinate> condition) {
+        if (!virgin) enter();
         arrayPredicateAndCounter = condition;
         return this;
     }
