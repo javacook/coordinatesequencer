@@ -1,6 +1,7 @@
 package com.javacook.coordinate.sequencer;
 
 import com.javacook.coordinate.Coordinate;
+import com.javacook.coordinate.CoordinateSequence;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,16 +13,16 @@ import java.util.Objects;
  */
 public class CoordinateSequencer {
 
-    private List<CoordinateSequence> coordinateSequences = new ArrayList<>();
-    private Integer xFrom;
-    private Integer yFrom;
-    private Integer xTo;
-    private Integer yTo;
-    private Integer xLen;
-    private Integer yLen;
-    private int xStep;
-    private int yStep;
-    private boolean virgin;
+    protected List<CoordinateSequence> coordinateSequences = new ArrayList<>();
+    protected Integer xFrom;
+    protected Integer yFrom;
+    protected Integer xTo;
+    protected Integer yTo;
+    protected Integer xLen;
+    protected Integer yLen;
+    protected int xStep;
+    protected int yStep;
+    protected boolean virgin;
 
 
     public CoordinateSequencer() {
@@ -111,13 +112,13 @@ public class CoordinateSequencer {
     }
 
     public CoordinateSequencer enter() {
-        coordinateSequences.add(build());
+        coordinateSequences.add(sequence());
         initCache();
         return this;
     }
 
 
-    public CoordinateSequence build() {
+    public CoordinateSequence sequence() {
         try {
             if (xFrom == null) xFrom = xTo - xLen;
             else if (xTo == null) xTo = xFrom + xLen;
@@ -145,15 +146,15 @@ public class CoordinateSequencer {
      * terminate                                                               *
     \*-------------------------------------------------------------------------*/
 
-    private Predicate<Coordinate> predicate;
-    private PredicateAndCounter<Coordinate> predicateAndCounter;
-    private PairPredicate<Coordinate> pairPredicate;
-    private PairPredicateAndCounter<Coordinate> pairPredicateAndCounter;
-    private ArrayPredicate<Coordinate> arrayPredicate;
-    private ArrayPredicateAndCounter<Coordinate> arrayPredicateAndCounter;
+    protected Predicate<Coordinate> predicate;
+    protected PredicateAndCounter<Coordinate> predicateAndCounter;
+    protected PairPredicate<Coordinate> pairPredicate;
+    protected PairPredicateAndCounter<Coordinate> pairPredicateAndCounter;
+    protected ArrayPredicate<Coordinate> arrayPredicate;
+    protected ArrayPredicateAndCounter<Coordinate> arrayPredicateAndCounter;
 
 
-    public CoordinateSequencer stopWhen(Predicate<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinate(Predicate<Coordinate> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
             throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
@@ -162,7 +163,7 @@ public class CoordinateSequencer {
         return this;
     }
 
-    public CoordinateSequencer stopWhen(PredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinate(PredicateAndCounter<Coordinate> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
             throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
@@ -171,7 +172,7 @@ public class CoordinateSequencer {
         return this;
     }
 
-    public CoordinateSequencer stopWhenPair(PairPredicate<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinatePair(PairPredicate<Coordinate> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
@@ -180,7 +181,7 @@ public class CoordinateSequencer {
         return this;
     }
 
-    public CoordinateSequencer stopWhenPair(PairPredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinatePair(PairPredicateAndCounter<Coordinate> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
@@ -189,40 +190,40 @@ public class CoordinateSequencer {
         return this;
     }
 
-    public CoordinateSequencer stopWhenArray(ArrayPredicate<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinateArray(ArrayPredicate<Coordinate> condition) {
         if (!virgin) enter();
         arrayPredicate = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenArray(ArrayPredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer stopWhenCoordinateArray(ArrayPredicateAndCounter<Coordinate> condition) {
         if (!virgin) enter();
         arrayPredicateAndCounter = condition;
         return this;
     }
 
 
-    private boolean terminate(Coordinate coord1, int counter) {
+    protected boolean terminate(Coordinate coord1, int counter) {
         return (predicate != null && predicate.test(coord1)) ||
                 (predicateAndCounter != null && predicateAndCounter.test(coord1, counter));
     }
 
-    private boolean terminate(Coordinate coord1, Coordinate coord2, int counter) {
+    protected boolean terminate(Coordinate coord1, Coordinate coord2, int counter) {
         return (pairPredicate != null && pairPredicate.test(coord1, coord2)) ||
                 (pairPredicateAndCounter != null && pairPredicateAndCounter.test(coord1, coord2, counter));
     }
 
-    private boolean terminate(Coordinate[] coords, int counter) {
+    protected boolean terminate(Coordinate[] coords, int counter) {
         return (arrayPredicate != null && arrayPredicate.test(coords)) ||
                 (arrayPredicateAndCounter != null && arrayPredicateAndCounter.test(coords, counter));
     }
 
     /*-------------------------------------------------------------------------*\
-     * forEach                                                                 *
+     * forEachCoordinate                                                                 *
     \*-------------------------------------------------------------------------*/
 
 
-    public void forEach(Consumer<Coordinate> action) {
+    public void forEachCoordinate(Consumer<Coordinate> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
             throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
@@ -235,7 +236,7 @@ public class CoordinateSequencer {
     }
 
 
-    public void forEach(ConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinate(ConsumerAndCounter<Coordinate> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
             throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
@@ -247,7 +248,7 @@ public class CoordinateSequencer {
         }
     }
 
-    public void forEachPair(PairConsumer<Coordinate> action) {
+    public void forEachCoordinatePair(PairConsumer<Coordinate> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
@@ -263,7 +264,7 @@ public class CoordinateSequencer {
     }
 
 
-    public void forEachPair(PairConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinatePair(PairConsumerAndCounter<Coordinate> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
@@ -279,7 +280,7 @@ public class CoordinateSequencer {
     }
 
 
-    public void forEachArray(ArrayConsumer<Coordinate> action) {
+    public void forEachCoordinateArray(ArrayConsumer<Coordinate> action) {
         if (!virgin) enter();
         List<Iterator<Coordinate>> coordinateSequencesIterators = new ArrayList<>();
         for (CoordinateSequence coordinateSequence : coordinateSequences) {
@@ -299,7 +300,7 @@ public class CoordinateSequencer {
     }
 
 
-    public void forEachArray(ArrayConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinateArray(ArrayConsumerAndCounter<Coordinate> action) {
         if (!virgin) enter();
         List<Iterator<Coordinate>> coordinateSequencesIterators = new ArrayList<>();
         for (CoordinateSequence coordinateSequence : coordinateSequences) {

@@ -1,7 +1,5 @@
-package com.javacook.coordinate.sequencer;
+package com.javacook.coordinate;
 
-
-import com.javacook.coordinate.Coordinate;
 
 import java.util.Iterator;
 
@@ -17,7 +15,7 @@ public class CoordinateSequence implements Iterable<Coordinate>{
     private int stepX = 1;
     private int stepY = 1;
 
-    CoordinateSequence(int fromX, int fromY, int toX, int toY, int stepX, int stepY) {
+    public CoordinateSequence(int fromX, int fromY, int toX, int toY, int stepX, int stepY) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
