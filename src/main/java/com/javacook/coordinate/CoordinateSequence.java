@@ -1,12 +1,11 @@
 package com.javacook.coordinate;
 
-
 import java.util.Iterator;
 
 /**
  * Created by vollmer on 20.08.16.
  */
-public class CoordinateSequence implements Iterable<Coordinate>{
+public class CoordinateSequence<T extends CoordinateInterface> implements Iterable<T> {
 
     private int fromX;
     private int fromY;
@@ -14,26 +13,32 @@ public class CoordinateSequence implements Iterable<Coordinate>{
     private int toY;
     private int stepX = 1;
     private int stepY = 1;
+    private CoordinateFactory<T> coordinateFactory;
 
-    public CoordinateSequence(int fromX, int fromY, int toX, int toY, int stepX, int stepY) {
+
+
+    public CoordinateSequence(int fromX, int fromY, int toX, int toY, int stepX, int stepY,
+                              CoordinateFactory<T> coordinateFactory) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
         this.stepX = stepX;
         this.stepY = stepY;
+        this.coordinateFactory = coordinateFactory;
     }
 
-    CoordinateSequence(int fromX, int fromY, int toX, int toY) {
-        this(fromX, fromY, toX, toY, 1, 1);
+    CoordinateSequence(int fromX, int fromY, int toX, int toY, CoordinateFactory<T> coordinateFactory) {
+        this(fromX, fromY, toX, toY, 1, 1, coordinateFactory);
     }
+
 
     @Override
-    public Iterator<Coordinate> iterator() {
+    public Iterator<T> iterator() {
         return new CoordinateIterator();
     }
 
-    public class CoordinateIterator implements Iterator<Coordinate> {
+    public class CoordinateIterator implements Iterator<T> {
         int x = fromX, y = fromY;
 
         @Override
@@ -42,9 +47,9 @@ public class CoordinateSequence implements Iterable<Coordinate>{
         }
 
         @Override
-        public Coordinate next() {
+        public T next() {
             if (hasNext()) {
-                Coordinate result = new Coordinate(x, y);
+                T result = coordinateFactory.create(x, y);
                 x += stepX;
                 if ((stepX > 0)? (x >= toX) : (x <= toX)) {
                     x = fromX;
@@ -68,11 +73,14 @@ public class CoordinateSequence implements Iterable<Coordinate>{
     }
 
     public static void main(String[] args) {
+        CoordinateSequence<Coordinate> sequence = new CoordinateSequence(5, 6, 7, 8, Coordinate::new);
+        sequence.forEach(t -> System.out.println(t.x()));
 
-        CoordinateSequence sequence = new CoordinateSequence(5, 6, 7, 8);
-        for (Coordinate coordinate : sequence) {
-            System.out.println(coordinate);
-        }
-        sequence.forEach(t -> System.out.println(t));
+        new CoordinateSequence<>(5, 6, 7, 8, Coordinate::new).forEach(t -> System.out.println(t.x()));
+
+
+        CoordinateSequence<CoordinateInterface> sequence2 = new CoordinateSequence(5, 6, 7, 8, CoordinateInterface::create);
+        sequence2.forEach(t -> System.out.println(t.x() + "," + t.y()));
+
     }
 }

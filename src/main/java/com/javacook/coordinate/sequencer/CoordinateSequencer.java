@@ -1,124 +1,141 @@
 package com.javacook.coordinate.sequencer;
-
 import com.javacook.coordinate.Coordinate;
+import com.javacook.coordinate.CoordinateFactory;
+import com.javacook.coordinate.CoordinateInterface;
 import com.javacook.coordinate.CoordinateSequence;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by vollmer on 20.08.16.
  */
-public class CoordinateSequencer {
+public class CoordinateSequencer<T extends CoordinateInterface>  {
 
-    protected List<CoordinateSequence> coordinateSequences = new ArrayList<>();
-    protected Integer xFrom;
-    protected Integer yFrom;
-    protected Integer xTo;
-    protected Integer yTo;
-    protected Integer xLen;
-    protected Integer yLen;
-    protected int xStep;
-    protected int yStep;
-    protected boolean virgin;
+    private List<CoordinateSequence<T>> coordinateSequences = new ArrayList<>();
+    private Integer xFrom;
+    private Integer yFrom;
+    private Integer xTo;
+    private Integer yTo;
+    private Integer xLen;
+    private Integer yLen;
+    private int xStep;
+    private int yStep;
+    private boolean virgin;
+    private CoordinateFactory<T> coordinateFactory;
 
-
-    public CoordinateSequencer() {
+    public CoordinateSequencer(CoordinateFactory<T> coordinateFactory) {
+        this.coordinateFactory = coordinateFactory;
         initCache();
     }
 
     protected void initCache() {
         xFrom = yFrom = null;
         xTo = yTo = null;
+        // xOffset = yOffset = 1;
         xStep = yStep = 1;
         virgin = true;
     }
 
-    public CoordinateSequencer fromX(int x) {
+    public CoordinateSequencer<T> fromX(int x) {
         xFrom = x;
         virgin = false;
         return this;
     }
 
-    public CoordinateSequencer fromY(int y) {
+    public CoordinateSequencer<T> fromY(int y) {
         yFrom = y;
         virgin = false;
         return this;
     }
 
-    public CoordinateSequencer from(Coordinate c) {
-        return fromX(c.x).fromY(c.y);
+
+    public CoordinateSequencer<T> from(int x, int y) {
+        return fromX(x).fromY(y);
     }
 
 
-    public CoordinateSequencer toX(int xTo) {
+    public CoordinateSequencer<T> from(CoordinateInterface c) {
+        return from(c.x(), c.y());
+    }
+
+
+    public CoordinateSequencer<T> toX(int xTo) {
         this.xTo = xTo;
         virgin = false;
         return this;
     }
 
-    public CoordinateSequencer toY(int yTo) {
+    public CoordinateSequencer<T> toY(int yTo) {
         this.yTo = yTo;
         virgin = false;
         return this;
     }
 
-    public CoordinateSequencer to(Coordinate c) {
-        return toX(c.x).toY(c.y);
-    }
-
-    public CoordinateSequencer forX(int x) {
-        return fromX(x).lenX(1);
-    }
-
-    public CoordinateSequencer forY(int y) {
-        return fromY(y).lenY(1);
-    }
-
-
-    public CoordinateSequencer lenX(int xLength) {
-        this.xLen = xLength;
-        virgin = false;
-        return this;
-    }
-
-    public CoordinateSequencer lenY(int yLength) {
-        this.yLen = yLength;
-        virgin = false;
-        return this;
-    }
-
-
-    public CoordinateSequencer stepX(int stepX) {
-        this.xStep = Objects.requireNonNull(stepX, "Argument stepX must not be null.");
-        virgin = false;
-        return this;
-    }
-
-    public CoordinateSequencer stepY(int stepY) {
-        this.yStep = Objects.requireNonNull(stepY, "Argument stepY must not be null.");
-        virgin = false;
-        return this;
-    }
-
-    public CoordinateSequencer ontoX(int x) {
+    public CoordinateSequencer<T> ontoX(int x) {
         return toX(x + 1);
     }
 
-    public CoordinateSequencer ontoY(int y) {
+
+    public CoordinateSequencer<T> ontoY(int y) {
         return toY(y + 1);
     }
 
-    public CoordinateSequencer enter() {
+
+    public CoordinateSequencer<T> to(int x, int y) {
+        return toX(x).toY(y);
+    }
+
+    public CoordinateSequencer<T> to(CoordinateInterface c) {
+        return to(c.x(), c.y());
+    }
+
+
+    public CoordinateSequencer<T> forX(int x) {
+        return fromX(x).toX(x+1);
+    }
+
+    public CoordinateSequencer<T> forY(int y) {
+        return fromY(y).toY(y+1);
+    }
+
+
+    public CoordinateSequencer<T> lenX(int len) {
+        this.xLen = len;
+        virgin = false;
+        return this;
+    }
+
+    public CoordinateSequencer<T> lenY(int len) {
+        this.yLen = len;
+        virgin = false;
+        return this;
+    }
+
+    public CoordinateSequencer<T> stepX(int step) {
+        this.xStep = step;
+        virgin = false;
+        return this;
+    }
+
+    public CoordinateSequencer<T> stepY(int step) {
+        this.yStep = step;
+        virgin = false;
+        return this;
+    }
+
+
+    public CoordinateSequencer<T> enter() {
         coordinateSequences.add(sequence());
         initCache();
         return this;
     }
 
 
-    public CoordinateSequence sequence() {
+
+    public CoordinateSequence<T> sequence() {
         try {
             if (xFrom == null) xFrom = xTo - xLen;
             else if (xTo == null) xTo = xFrom + xLen;
@@ -131,14 +148,7 @@ public class CoordinateSequencer {
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("y-coordinates are not well defined.");
         }
-        return new CoordinateSequence(xFrom, yFrom, xTo, yTo, xStep, yStep);
-    }
-
-    @Override
-    public String toString() {
-        return "CoordinateSequencer{" +
-                "coordinateSequences=" + coordinateSequences +
-                '}';
+        return new CoordinateSequence<T>(xFrom, yFrom, xTo, yTo, xStep, yStep, coordinateFactory);
     }
 
 
@@ -146,153 +156,161 @@ public class CoordinateSequencer {
      * terminate                                                               *
     \*-------------------------------------------------------------------------*/
 
-    protected Predicate<Coordinate> predicate;
-    protected PredicateAndCounter<Coordinate> predicateAndCounter;
-    protected PairPredicate<Coordinate> pairPredicate;
-    protected PairPredicateAndCounter<Coordinate> pairPredicateAndCounter;
-    protected ArrayPredicate<Coordinate> arrayPredicate;
-    protected ArrayPredicateAndCounter<Coordinate> arrayPredicateAndCounter;
+
+    protected Predicate<T> predicate;
+    protected PredicateAndCounter<T> predicateAndCounter;
+    protected PairPredicate<T> pairPredicate;
+    protected PairPredicateAndCounter<T> pairPredicateAndCounter;
+    protected ArrayPredicate<T> arrayPredicate;
+    protected ArrayPredicateAndCounter<T> arrayPredicateAndCounter;
 
 
-    public CoordinateSequencer stopWhenCoordinate(Predicate<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinate(Predicate<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
         }
         predicate = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenCoordinate(PredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinate(PredicateAndCounter<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
         }
         predicateAndCounter = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenCoordinatePair(PairPredicate<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinatePair(PairPredicate<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+            throw new IllegalArgumentException("This method allows exactly two coordinate sequences.");
         }
         pairPredicate = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenCoordinatePair(PairPredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinatePair(PairPredicateAndCounter<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+            throw new IllegalArgumentException("This method allows exactly two coordinate sequences.");
         }
         pairPredicateAndCounter = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenCoordinateArray(ArrayPredicate<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinateArray(ArrayPredicate<T> condition) {
         if (!virgin) enter();
         arrayPredicate = condition;
         return this;
     }
 
-    public CoordinateSequencer stopWhenCoordinateArray(ArrayPredicateAndCounter<Coordinate> condition) {
+    public CoordinateSequencer<T> stopWhenCoordinateArray(ArrayPredicateAndCounter<T> condition) {
         if (!virgin) enter();
         arrayPredicateAndCounter = condition;
         return this;
     }
 
 
-    protected boolean terminate(Coordinate coord1, int counter) {
+    protected boolean terminate(T coord1, int counter) {
         return (predicate != null && predicate.test(coord1)) ||
                 (predicateAndCounter != null && predicateAndCounter.test(coord1, counter));
     }
 
-    protected boolean terminate(Coordinate coord1, Coordinate coord2, int counter) {
+    protected boolean terminate(T coord1, T coord2, int counter) {
         return (pairPredicate != null && pairPredicate.test(coord1, coord2)) ||
                 (pairPredicateAndCounter != null && pairPredicateAndCounter.test(coord1, coord2, counter));
     }
 
-    protected boolean terminate(Coordinate[] coords, int counter) {
+    protected boolean terminate(T[] coords, int counter) {
         return (arrayPredicate != null && arrayPredicate.test(coords)) ||
                 (arrayPredicateAndCounter != null && arrayPredicateAndCounter.test(coords, counter));
     }
 
+
+
     /*-------------------------------------------------------------------------*\
-     * forEachCoordinate                                                                 *
+     * forEachCoordinate                                                       *
     \*-------------------------------------------------------------------------*/
 
 
-    public void forEachCoordinate(Consumer<Coordinate> action) {
+    public void forEachCoordinate(Consumer<? super T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
         }
         int counter = 0;
-        for (Coordinate coord : coordinateSequences.get(0)) {
+        for (T coord : coordinateSequences.get(0)) {
             if (terminate(coord, counter++)) break;
             action.apply(coord);
         }
     }
 
-
-    public void forEachCoordinate(ConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinate(ConsumerAndCounter<? super T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one CoordinateSequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
         }
         int counter = 0;
-        for (Coordinate coord : coordinateSequences.get(0)) {
+        for (T coord : coordinateSequences.get(0)) {
             if (terminate(coord, counter)) break;
             action.apply(coord, counter++);
         }
     }
 
-    public void forEachCoordinatePair(PairConsumer<Coordinate> action) {
+
+    public void forEachCoordinatePair(PairConsumer<T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
         }
-        Iterator<Coordinate> iter = coordinateSequences.get(1).iterator();
+        Iterator<T> iter = coordinateSequences.get(1).iterator();
         int counter = 0;
-        for (Coordinate coord1 : coordinateSequences.get(0)) {
+        for (T coord1 : coordinateSequences.get(0)) {
             if (!iter.hasNext()) break;
-            Coordinate coord2 = iter.next();
+            T coord2 = iter.next();
             if (terminate(coord1, coord2, counter)) break;
             action.apply(coord1, coord2);
         }
     }
 
 
-    public void forEachCoordinatePair(PairConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinatePair(PairConsumerAndCounter<CoordinateInterface> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
         }
-        Iterator<Coordinate> iter = coordinateSequences.get(1).iterator();
+        Iterator<T> iter = coordinateSequences.get(1).iterator();
         int counter = 0;
-        for (Coordinate coord1 : coordinateSequences.get(0)) {
+        for (T coord1 : coordinateSequences.get(0)) {
             if (!iter.hasNext()) break;
-            Coordinate coord2 = iter.next();
+            T coord2 = iter.next();
             if (terminate(coord1, coord2, counter)) break;
             action.apply(coord1, coord2, counter);
         }
     }
 
 
-    public void forEachCoordinateArray(ArrayConsumer<Coordinate> action) {
+    public void forEachCoordinateArray(ArrayConsumer<T> action) {
         if (!virgin) enter();
-        List<Iterator<Coordinate>> coordinateSequencesIterators = new ArrayList<>();
-        for (CoordinateSequence coordinateSequence : coordinateSequences) {
+        List<Iterator<T>> coordinateSequencesIterators = new ArrayList<>();
+        for (CoordinateSequence<T> coordinateSequence : coordinateSequences) {
             coordinateSequencesIterators.add(coordinateSequence.iterator());
         }
-        Coordinate[] coordinates = new Coordinate[coordinateSequences.size()];
+
+        T[] coordinates = null;
         loop:
         for (int loopCnt = 0;; loopCnt++) {
             int coordArrIndex = 0;
-            for (Iterator<Coordinate> iter : coordinateSequencesIterators) {
+            for (Iterator<T> iter : coordinateSequencesIterators) {
                 if (!iter.hasNext()) break loop;
-                coordinates[coordArrIndex++] = iter.next();
+                T next = iter.next();
+                if (coordinates == null) {
+                    coordinates = (T[]) Array.newInstance(next.getClass(), coordinateSequences.size());
+                }
+                coordinates[coordArrIndex++] = next;
             }
             if (terminate(coordinates, loopCnt)) break loop;
             action.apply(coordinates);
@@ -300,23 +318,54 @@ public class CoordinateSequencer {
     }
 
 
-    public void forEachCoordinateArray(ArrayConsumerAndCounter<Coordinate> action) {
+    public void forEachCoordinateArray(ArrayConsumerAndCounter<CoordinateInterface> action) {
         if (!virgin) enter();
-        List<Iterator<Coordinate>> coordinateSequencesIterators = new ArrayList<>();
-        for (CoordinateSequence coordinateSequence : coordinateSequences) {
+        List<Iterator<T>> coordinateSequencesIterators = new ArrayList<>();
+        for (CoordinateSequence<T> coordinateSequence : coordinateSequences) {
             coordinateSequencesIterators.add(coordinateSequence.iterator());
         }
-        Coordinate[] coordinates = new Coordinate[coordinateSequences.size()];
+
+        T[] coordinates = null;
         loop:
         for (int loopCnt = 0;; loopCnt++) {
             int coordArrIndex = 0;
-            for (Iterator<Coordinate> iter : coordinateSequencesIterators) {
+            for (Iterator<T> iter : coordinateSequencesIterators) {
                 if (!iter.hasNext()) break loop;
-                coordinates[coordArrIndex++] = iter.next();
+                T next = iter.next();
+                if (coordinates == null) {
+                    coordinates = (T[]) Array.newInstance(next.getClass(), coordinateSequences.size());
+                }
+                coordinates[coordArrIndex++] = next;
             }
             if (terminate(coordinates, loopCnt)) break loop;
             action.apply(coordinates, loopCnt);
         }
+    }
+
+
+
+
+    public static void main(String[] args) {
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .sequence().forEach(coord -> System.out.println(coord));
+
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .sequence()
+                .forEach(cord -> System.out.println(cord.x()));
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .forEachCoordinate(coord -> System.out.println(coord.x()));
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(8).toY(6)
+                .stopWhenCoordinate(coord -> coord.x() == 6)
+                .forEachCoordinate((coord, i) -> System.out.println(coord + " - " + i));
+
     }
 
 }

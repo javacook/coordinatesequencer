@@ -16,19 +16,34 @@ public interface CoordinateInterface {
 
             @Override
             public int x() {
-                return 0;
+                return x;
             }
 
             @Override
             public int y() {
-                return 0;
+                return y;
             }
-        };
-    }
 
-    public static void main(String[] args) {
-        CoordinateInterface ci = CoordinateInterface.create(4, 5);
-        System.out.println(ci.x() + ", " + ci.y());
+            @Override
+            public String toString() {
+                return "(" + x + ", " + y + ")";
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || !(o instanceof CoordinateInterface)) return false;
+
+                CoordinateInterface that = (CoordinateInterface) o;
+                return x == that.x() && y == that.y();
+            }
+
+            @Override
+            public int hashCode() {
+                return 31 * x + y;
+            }
+
+        };
     }
 
 }
