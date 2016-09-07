@@ -277,7 +277,7 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     }
 
 
-    public void forEachCoordinatePair(PairConsumerAndCounter<CoordinateInterface> action) {
+    public void forEachCoordinatePair(PairConsumerAndCounter<T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
             throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
@@ -318,7 +318,7 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     }
 
 
-    public void forEachCoordinateArray(ArrayConsumerAndCounter<CoordinateInterface> action) {
+    public void forEachCoordinateArray(ArrayConsumerAndCounter<T> action) {
         if (!virgin) enter();
         List<Iterator<T>> coordinateSequencesIterators = new ArrayList<>();
         for (CoordinateSequence<T> coordinateSequence : coordinateSequences) {
