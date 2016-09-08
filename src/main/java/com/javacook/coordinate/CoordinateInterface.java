@@ -31,11 +31,11 @@ public interface CoordinateInterface {
 
             @Override
             public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || !(o instanceof CoordinateInterface)) return false;
-
+                if (o == this) return true;
+                if (o == null) return false;
+                if (!(o instanceof CoordinateInterface)) return false;
                 CoordinateInterface that = (CoordinateInterface) o;
-                return x == that.x() && y == that.y();
+                return x == that.x()  && y == that.y();
             }
 
             @Override

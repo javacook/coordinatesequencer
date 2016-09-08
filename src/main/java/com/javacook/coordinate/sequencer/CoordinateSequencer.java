@@ -1,8 +1,6 @@
 package com.javacook.coordinate.sequencer;
-import com.javacook.coordinate.Coordinate;
 import com.javacook.coordinate.CoordinateFactory;
 import com.javacook.coordinate.CoordinateInterface;
-import com.javacook.coordinate.CoordinateSequence;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.List;
 public class CoordinateSequencer<T extends CoordinateInterface>  {
 
     private List<CoordinateSequence<T>> coordinateSequences = new ArrayList<>();
+    private CoordinateFactory<T> coordinateFactory;
     private Integer xFrom;
     private Integer yFrom;
     private Integer xTo;
@@ -24,7 +23,7 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     private int xStep;
     private int yStep;
     private boolean virgin;
-    private CoordinateFactory<T> coordinateFactory;
+
 
     public CoordinateSequencer(CoordinateFactory<T> coordinateFactory) {
         this.coordinateFactory = coordinateFactory;
@@ -34,7 +33,6 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     protected void initCache() {
         xFrom = yFrom = null;
         xTo = yTo = null;
-        // xOffset = yOffset = 1;
         xStep = yStep = 1;
         virgin = true;
     }
@@ -342,30 +340,5 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
         }
     }
 
-
-
-
-    public static void main(String[] args) {
-
-        new CoordinateSequencer<>(Coordinate::new)
-                .fromX(3).fromY(5).toX(5).toY(6)
-                .sequence().forEach(coord -> System.out.println(coord));
-
-
-        new CoordinateSequencer<>(Coordinate::new)
-                .fromX(3).fromY(5).toX(5).toY(6)
-                .sequence()
-                .forEach(cord -> System.out.println(cord.x()));
-
-        new CoordinateSequencer<>(Coordinate::new)
-                .fromX(3).fromY(5).toX(5).toY(6)
-                .forEachCoordinate(coord -> System.out.println(coord.x()));
-
-        new CoordinateSequencer<>(Coordinate::new)
-                .fromX(3).fromY(5).toX(8).toY(6)
-                .stopWhenCoordinate(coord -> coord.x() == 6)
-                .forEachCoordinate((coord, i) -> System.out.println(coord + " - " + i));
-
-    }
 
 }

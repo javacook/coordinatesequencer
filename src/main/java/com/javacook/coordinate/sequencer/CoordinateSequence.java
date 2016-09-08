@@ -1,4 +1,7 @@
-package com.javacook.coordinate;
+package com.javacook.coordinate.sequencer;
+
+import com.javacook.coordinate.CoordinateFactory;
+import com.javacook.coordinate.CoordinateInterface;
 
 import java.util.Iterator;
 
@@ -7,14 +10,13 @@ import java.util.Iterator;
  */
 public class CoordinateSequence<T extends CoordinateInterface> implements Iterable<T> {
 
-    private int fromX;
-    private int fromY;
-    private int toX;
-    private int toY;
-    private int stepX = 1;
-    private int stepY = 1;
-    private CoordinateFactory<T> coordinateFactory;
-
+    protected int fromX;
+    protected int fromY;
+    protected int toX;
+    protected int toY;
+    protected int stepX = 1;
+    protected int stepY = 1;
+    protected CoordinateFactory<T> coordinateFactory;
 
 
     public CoordinateSequence(int fromX, int fromY, int toX, int toY, int stepX, int stepY,
@@ -65,22 +67,8 @@ public class CoordinateSequence<T extends CoordinateInterface> implements Iterab
     @Override
     public String toString() {
         return "CoordinateSequence{" +
-                "fromX=" + fromX +
-                ", fromY=" + fromY +
-                ", toX=" + toX +
-                ", toY=" + toY +
-                '}';
+                "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';
     }
 
-    public static void main(String[] args) {
-        CoordinateSequence<Coordinate> sequence = new CoordinateSequence(5, 6, 7, 8, Coordinate::new);
-        sequence.forEach(t -> System.out.println(t.x()));
 
-        new CoordinateSequence<>(5, 6, 7, 8, Coordinate::new).forEach(t -> System.out.println(t.x()));
-
-
-        CoordinateSequence<CoordinateInterface> sequence2 = new CoordinateSequence(5, 6, 7, 8, CoordinateInterface::create);
-        sequence2.forEach(t -> System.out.println(t.x() + "," + t.y()));
-
-    }
 }

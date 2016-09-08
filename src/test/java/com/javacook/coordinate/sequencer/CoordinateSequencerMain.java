@@ -1,12 +1,37 @@
 package com.javacook.coordinate.sequencer;
 
 import com.javacook.coordinate.Coordinate;
-import com.javacook.coordinate.CoordinateInterface;
 
 public class CoordinateSequencerMain {
 
 
     public static void main(String[] args) {
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .sequence().forEach(coord -> System.out.println(coord));
+
+        System.out.println("--------------");
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .sequence()
+                .forEach(cord -> System.out.println(cord.x()));
+
+        System.out.println("--------------");
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(5).toY(6)
+                .forEachCoordinate(coord -> System.out.println(coord.x()));
+
+        System.out.println("--------------");
+
+        new CoordinateSequencer<>(Coordinate::new)
+                .fromX(3).fromY(5).toX(8).toY(6)
+                .stopWhenCoordinate(coord -> coord.x() == 6)
+                .forEachCoordinate((coord, i) -> System.out.println(coord + " - " + i));
+
+        System.out.println("--------------");
 
         new CoordinateSequencer<>(Coordinate::new).forX(5).forY(9)
                 .forEachCoordinate(System.out::println);
