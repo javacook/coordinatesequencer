@@ -65,14 +65,11 @@ public class Coordinate implements CoordinateInterface {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Coordinate that = (Coordinate) o;
-
-        if (x != that.x) return false;
-        return y == that.y;
-
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof CoordinateInterface)) return false;
+        CoordinateInterface that = (CoordinateInterface) o;
+        return x == that.x()  && y == that.y();
     }
 
     @Override
