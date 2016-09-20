@@ -271,7 +271,7 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
         for (T coord1 : coordinateSequences.get(0)) {
             if (!iter.hasNext()) break;
             T coord2 = iter.next();
-            if (terminate(coord1, coord2, counter)) break;
+            if (terminate(coord1, coord2, counter++)) break;
             action.apply(coord1, coord2);
         }
     }
@@ -288,7 +288,7 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
             if (!iter.hasNext()) break;
             T coord2 = iter.next();
             if (terminate(coord1, coord2, counter)) break;
-            action.apply(coord1, coord2, counter);
+            action.apply(coord1, coord2, counter++);
         }
     }
 
