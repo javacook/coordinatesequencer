@@ -140,13 +140,15 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
             if (xFrom == null) xFrom = xTo - xLen;
             else if (xTo == null) xTo = xFrom + xLen;
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException("x-coordinates are not well defined.");
+            throw new IllegalArgumentException("x-coordinates are not well defined." +
+                    "from=("+xFrom+","+yFrom+"), to=("+xTo+","+yTo+"), len=("+xLen+","+yLen+")");
         }
         try {
             if (yFrom == null) yFrom = yTo - yLen;
             else if (yTo == null) yTo = yFrom + yLen;
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException("y-coordinates are not well defined.");
+            throw new IllegalArgumentException("y-coordinates are not well defined." +
+                    "from=("+xFrom+","+yFrom+"), to=("+xTo+","+yTo+"), len=("+xLen+","+yLen+")");
         }
         return new CoordinateSequence<T>(xFrom, yFrom, xTo, yTo, xStep, yStep, coordinateFactory);
     }
