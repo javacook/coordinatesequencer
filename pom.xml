@@ -11,6 +11,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <scm>
+        <connection>scm:git:git://github.com/javacook/coordinate-sequencer.git</connection>
+        <developerConnection>scm:git:git@github.com:javacook/coordinate-sequencer.git</developerConnection>
+        <url>https://github.com/javacook/coordinate-sequencer</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <email>javacook@gmx.de</email>
+            <name>Jörg Vollmer</name>
+            <url>https://github.com/javacook</url>
+            <id>javacook</id>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
@@ -39,5 +54,14 @@
         </dependency>
 
     </dependencies>
+
+
+    <distributionManagement>
+        <repository>
+            <id>Clean Coder Artifactory</id>
+            <url>http://www.clean-coder.de:8080/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
+
 
 </project>
