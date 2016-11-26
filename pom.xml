@@ -5,7 +5,7 @@
 
     <groupId>com.javacook</groupId>
     <artifactId>coordinate-sequencer</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +58,7 @@
 
     <distributionManagement>
         <repository>
-            <id>Clean Coder Artifactory</id>
+            <id>Artifactory</id>
             <url>http://www.clean-coder.de:8080/artifactory/libs-release-local</url>
         </repository>
     </distributionManagement>
