@@ -5,11 +5,26 @@ package com.javacook.coordinate;
  */
 public class Coordinate implements CoordinateInterface {
 
-    public final int x, y;
+    final int x;
+    final int y;
 
+    /**
+     * Default constructor
+     * @param x
+     * @param y
+     */
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Copy constructor
+     * @param coord
+     */
+    public Coordinate(CoordinateInterface coord) {
+        this.x = coord.x();
+        this.y = coord.y();
     }
 
     @Override
