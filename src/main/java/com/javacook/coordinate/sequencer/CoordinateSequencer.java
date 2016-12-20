@@ -170,7 +170,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public CoordinateSequencer<T> stopWhen(Predicate<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence. " +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         predicate = condition;
         return this;
@@ -179,7 +180,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public CoordinateSequencer<T> stopWhen(PredicateAndCounter<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         predicateAndCounter = condition;
         return this;
@@ -188,7 +190,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public CoordinateSequencer<T> stopWhenPair(PairPredicate<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two coordinate sequences.");
+            throw new IllegalArgumentException("This method allows exactly two coordinate sequences." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         pairPredicate = condition;
         return this;
@@ -197,7 +200,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public CoordinateSequencer<T> stopWhenPair(PairPredicateAndCounter<T> condition) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two coordinate sequences.");
+            throw new IllegalArgumentException("This method allows exactly two coordinate sequences." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         pairPredicateAndCounter = condition;
         return this;
@@ -241,7 +245,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public void forEach(Consumer<? super T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         int counter = 0;
         for (T coord : coordinateSequences.get(0)) {
@@ -253,7 +258,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public void forEach(ConsumerAndCounter<? super T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 1) {
-            throw new IllegalArgumentException("This method allows exactly one coordinate sequence.");
+            throw new IllegalArgumentException("This method allows exactly one coordinate sequence." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         int counter = 0;
         for (T coord : coordinateSequences.get(0)) {
@@ -266,7 +272,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public void forEachPair(PairConsumer<T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         Iterator<T> iter = coordinateSequences.get(1).iterator();
         int counter = 0;
@@ -282,7 +289,8 @@ public class CoordinateSequencer<T extends CoordinateInterface>  {
     public void forEachPair(PairConsumerAndCounter<T> action) {
         if (!virgin) enter();
         if (coordinateSequences.size() != 2) {
-            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences.");
+            throw new IllegalArgumentException("This method allows exactly two CoordinateSequences." +
+                    "The enviroment requires " + coordinateSequences.size());
         }
         Iterator<T> iter = coordinateSequences.get(1).iterator();
         int counter = 0;
