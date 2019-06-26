@@ -6,6 +6,19 @@
     <groupId>de.javacook</groupId>
     <artifactId>coordinate-sequencer</artifactId>
     <version>0.3</version>
+    <name>Coordinate Sequencer</name>
+    <description>A small API to generate sequences of 2D coordinates for the task to read Excel data very easily
+    </description>
+    <url>https://github.com/javacook/coordinate-sequencer</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
